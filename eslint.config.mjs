@@ -6,22 +6,27 @@ import prettier from "eslint-plugin-prettier";
 
 export default defineConfig([
   {
+    ignores: [
+      "node_modules",
+      "fixtures/**",
+      "playwright-report/**",
+      "test-results/**",
+      "*.json"
+    ],
+  },
+  {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
     languageOptions: {
       globals: { ...globals.node, ...globals.browser },
     },
   },
-
-
   ...tseslint.configs.recommended,
-
 
   {
     files: ["tests/**/*.{ts,js}"],
     plugins: { playwright },
     rules: { ...playwright.configs.recommended.rules },
   },
-
 
   {
     plugins: { prettier },

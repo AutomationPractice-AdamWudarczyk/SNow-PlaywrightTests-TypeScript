@@ -1,0 +1,5 @@
+node_modules
+fixtures/
+*.json
+playwright-report/
+test-results/

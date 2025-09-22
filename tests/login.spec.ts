@@ -1,11 +1,19 @@
 import { test, expect } from '@playwright/test';
+import { LoginPage } from '@pages/LoginPage';
 
-test('invalid login shows error', async ({ page }) => {
-  await page.goto('https://dev194623.service-now.com/navpage.do');
+const SN_USER = process.env.SN_USER!;
+const SN_PASS = process.env.SN_PASS!;
 
-  await page.getByRole('textbox', { name: 'User name' }).fill('Adam');
-  await page.getByRole('textbox', { name: 'Password' }).fill('Wudarczyk');
-  await page.getByRole('button', { name: 'Log in' }).click();
+test('valid login works', async ({ page }) => {
+  const login = LoginPage(page);
+  await login.goto();
+  await login.loginSuccess(SN_USER, SN_PASS);
+  await expect(page).toHaveURL(/.*now\/nav\/ui\/classic.*/);
+});
 
-  await expect(page.locator('#output_messages div')).toHaveText(/User name or password invalid/i);
+test('invalid login fails', async ({ page }) => {
+  const login = LoginPage(page);
+  await login.goto();
+  await login.loginFailure('wrongUser', 'wrongPass');
+  await expect(login.errorMsg).toContainText(/invalid/i, { timeout: 10000 });
 });
